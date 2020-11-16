@@ -1,0 +1,68 @@
+* {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    user-select: none;
+}
+
+#header {
+    margin-top: 32px;
+    width: 100vw;
+    height: 110px;
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+#header-input label {
+    margin: 10px;
+    background: transparent;
+}
+
+#header-button {
+    display: flex;
+    align-items: center;
+}
+
+#header-button span {
+    padding: 15px;
+}
+
+#content {
+    width: 100vw;
+    height: calc(100vh - 32px - 110px);
+    overflow-x: hidden;
+    overflow-y: scroll;
+    background: white;
+    padding: 10px;
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+#coming-soon {
+    width: 100%;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    margin-top: calc(50vh - 110px);
+}

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>IASA 프린트</title>
+    <link href="./css/frameLess.css" rel="stylesheet" type="text/css">
+    <link href="./css/main.css" rel="stylesheet" type="text/css">
+    <link href="./css/notosanskr.css" rel="stylesheet" type="text/css">
+    <script src="./js/material-components-web.min.js"></script>
+    <link href="./css/material-components-web.min.css" rel="stylesheet">
+    <script src="./js/frameLess.js"></script>
+    <script src="./js/main.js"></script>
+</head>
+<body>
+<header id="titlebar">
+    <div id="drag-region">
+        <div id="window-title">
+            <span id="appTitle">IASA 프린트</span>
+        </div>
+        <div id="window-controls">
+            <div class="control-btn" id="min-button">
+                <span>&#xE921;</span>
+            </div>
+            <div class="control-btn" id="max-button">
+                <span>&#xE922;</span>
+            </div>
+            <div class="control-btn" id="restore-button">
+                <span>&#xE923;</span>
+            </div>
+            <div class="control-btn" id="close-button">
+                <span>&#xE8BB;</span>
+            </div>
+        </div>
+    </div>
+</header>
+<main>
+    <div id="header">
+        <div id="header-input">
+            <label class="mdc-text-field mdc-text-field--filled" id="uid-container">
+                <span class="mdc-text-field__ripple"></span>
+                <span class="mdc-floating-label">학번</span>
+                <input class="mdc-text-field__input" id="uid" type="text">
+                <span class="mdc-line-ripple"></span>
+            </label>
+            <label class="mdc-text-field mdc-text-field--filled" id="paper-count-container">
+                <span class="mdc-text-field__ripple"></span>
+                <span class="mdc-floating-label">인쇄 매수</span>
+                <input class="mdc-text-field__input" id="paperCount" type="text">
+                <span class="mdc-line-ripple"></span>
+            </label>
+        </div>
+        <div id="header-button">
+            <button class="mdc-button" onclick="print()">
+                <div class="mdc-button__ripple"></div>
+                <span class="mdc-button__label">인쇄</span>
+            </button>
+        </div>
+    </div>
+    <div id="content">
+        <div id="coming-soon">
+            <h1 style="font-weight: 400;">더 많은 기능들이 곧 생길 거에요.</h1>
+        </div>
+    </div>
+</main>
+<div class="mdc-snackbar">
+    <div aria-relevant="additions" class="mdc-snackbar__surface" role="status">
+        <div aria-atomic="false" class="mdc-snackbar__label" id="snackbar-text"></div>
+        <div aria-atomic="true" class="mdc-snackbar__actions">
+            <button class="mdc-button mdc-snackbar__action" type="button">
+                <div class="mdc-button__ripple"></div>
+                <span class="mdc-button__label">닫기</span>
+            </button>
+        </div>
+    </div>
+</div>
+</body>
+</html>
