@@ -31,7 +31,7 @@ function createMainWindow() {
         return
     }
     mainWindow = new BrowserWindow({
-        width: 900, height: 600, minWidth: 650, minHeight: 300, vibrancy: 'appearance-based', webPreferences: {
+        width: 900, height: 600, minWidth: 650, minHeight: 300, vibrancy: 'light', webPreferences: {
             nodeIntegration: true,
             webSecurity: false,
             enableRemoteModule: true

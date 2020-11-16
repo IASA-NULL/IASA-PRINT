@@ -1,6 +1,6 @@
 {
   "name": "iasa-print",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "IASA 프린터",
   "main": "index.js",
   "scripts": {
@@ -19,7 +19,7 @@
   },
   "build": {
     "productName": "IASA 프린터",
-    "appId": "iasa.null.iasa-print",
+    "appId": "iasa.null.print",
     "artifactName": "iasa-print.${ext}",
     "directories": {
       "output": "build"
