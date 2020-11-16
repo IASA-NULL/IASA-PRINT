@@ -13,6 +13,13 @@ let tray
 
 app.setLoginItemSettings({openAtLogin: true})
 
+const gotTheLock = app.requestSingleInstanceLock()
+if (!gotTheLock) {
+    app.quit()
+}
+
+app.on('second-instance', createMainWindow)
+
 function getFramePath() {
     return `file://${__dirname}/index.html`
 }

@@ -5,6 +5,10 @@
     user-select: none;
 }
 
+*::selection {
+    background: #00000055;
+}
+
 #header {
     margin-top: 32px;
     width: 100vw;
