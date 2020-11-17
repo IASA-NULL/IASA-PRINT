@@ -1,4 +1,5 @@
 let snackbar, uidText, paperCountText
+let c1, c2, c3, c4
 
 function showSnackbar(str) {
     document.getElementById('snackbar-text').innerText = str
@@ -48,6 +49,15 @@ function print() {
     })
 }
 
+function getFile() {
+    c1.value = ''
+    c2.value = ''
+    c3.value = ''
+    c4.value = ''
+    c1.focus()
+    showSnackbar('코드가 올바르지 않습니다.')
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     uidText = mdc.textField.MDCTextField.attachTo(document.getElementById('uid-container'))
     paperCountText = mdc.textField.MDCTextField.attachTo(document.getElementById('paper-count-container'))
@@ -61,4 +71,61 @@ document.addEventListener('DOMContentLoaded', () => {
     const buttons = document.querySelectorAll('.mdc-button')
     for (const button of buttons) new mdc.ripple.MDCRipple(button)
     snackbar = new mdc.snackbar.MDCSnackbar(document.querySelector('.mdc-snackbar'))
+
+    c1 = document.getElementById('fileCode1')
+    c2 = document.getElementById('fileCode2')
+    c3 = document.getElementById('fileCode3')
+    c4 = document.getElementById('fileCode4')
+    c1.addEventListener('focus', () => {
+        if (c1.value) c2.focus()
+    })
+    c2.addEventListener('focus', () => {
+        if (c1.value === '') c1.focus()
+        else if (c2.value) c3.focus()
+    })
+    c3.addEventListener('focus', () => {
+        if (c2.value === '') c2.focus()
+        else if (c3.value) c4.focus()
+    })
+    c4.addEventListener('focus', () => {
+        if (c3.value === '') c3.focus()
+        else c4.select()
+    })
+    c1.addEventListener('keyup', (e) => {
+        c1.value = isNaN(parseInt(c1.value[0])) ? '' : parseInt(c1.value[0])
+        c2.focus()
+    })
+    c2.addEventListener('keyup', (e) => {
+        c2.value = isNaN(parseInt(c2.value[0])) ? '' : parseInt(c2.value[0])
+        c3.focus()
+    })
+    c2.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && c2.value === '') {
+            c1.value = ''
+            c1.focus()
+            return
+        }
+    })
+    c3.addEventListener('keyup', (e) => {
+        c3.value = isNaN(parseInt(c3.value[0])) ? '' : parseInt(c3.value[0])
+        c4.focus()
+    })
+    c3.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && c3.value === '') {
+            c2.value = ''
+            c2.focus()
+            return
+        }
+    })
+    c4.addEventListener('keyup', (e) => {
+        c4.value = isNaN(parseInt(c4.value[0])) ? '' : parseInt(c4.value[0])
+        if (c4.value) getFile()
+    })
+    c4.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && c4.value === '') {
+            c3.value = ''
+            c3.focus()
+            return
+        }
+    })
 })

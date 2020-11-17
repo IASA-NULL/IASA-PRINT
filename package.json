@@ -1,6 +1,6 @@
 {
   "name": "iasa-print",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "IASA 프린터",
   "main": "index.js",
   "scripts": {

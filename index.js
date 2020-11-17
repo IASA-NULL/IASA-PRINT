@@ -1,17 +1,14 @@
-const {app, ipcMain, dialog, Notification, Tray, session, Menu} = require('electron')
+const {app, Notification, Tray} = require('electron')
 const path = require('path')
 const setting = require('electron-settings')
-const fetch = require('node-fetch')
 const {BrowserWindow} = require('electron-acrylic-window')
 const {autoUpdater} = require("electron-updater")
-const {version, description} = require('./package.json')
+const {version} = require('./package.json')
 
 
 let mainWindow
 let tray
 
-
-app.setLoginItemSettings({openAtLogin: true})
 
 const gotTheLock = app.requestSingleInstanceLock()
 if (!gotTheLock) {
@@ -19,6 +16,8 @@ if (!gotTheLock) {
 }
 
 app.on('second-instance', createMainWindow)
+
+app.setLoginItemSettings({openAtLogin: true})
 
 function getFramePath() {
     return `file://${__dirname}/index.html`
