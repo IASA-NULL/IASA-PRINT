@@ -1,9 +1,10 @@
-const {app, Notification, Tray} = require('electron')
+const {app, Notification, Tray, ipcMain, shell} = require('electron')
 const path = require('path')
 const setting = require('electron-settings')
 const {BrowserWindow} = require('electron-acrylic-window')
 const {autoUpdater} = require("electron-updater")
 const {version} = require('./package.json')
+const {download} = require("electron-dl")
 
 
 let mainWindow
@@ -18,6 +19,13 @@ if (!gotTheLock) {
 app.on('second-instance', createMainWindow)
 
 app.setLoginItemSettings({openAtLogin: true})
+
+function uuidv4() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    })
+}
 
 function getFramePath() {
     return `file://${__dirname}/index.html`
@@ -58,6 +66,15 @@ function init() {
     setInterval(() => {
         autoUpdater.checkForUpdates()
     }, 60000)
+
+    ipcMain.on("download", (event, info) => {
+        download(mainWindow, info.url, {directory: path.join(app.getPath("temp"), uuidv4())}).then(dl => {
+            shell.openExternal(dl.getSavePath())
+            mainWindow.webContents.send("showDialog", '파일이 다운로드됐어요.')
+        }).catch(() => {
+            mainWindow.webContents.send("showDialog", '코드가 올바르지 않아요.')
+        })
+    })
 
     createMainWindow()
 }

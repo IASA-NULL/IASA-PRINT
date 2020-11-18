@@ -1,6 +1,7 @@
 let snackbar, uidText, paperCountText
 let c1, c2, c3, c4
 
+
 function showSnackbar(str) {
     document.getElementById('snackbar-text').innerText = str
     snackbar.close()
@@ -50,15 +51,19 @@ function print() {
 }
 
 function getFile() {
+    const {ipcRenderer} = require('electron')
+    ipcRenderer.send("download", {
+        url: "https://api.iasa.kr/print/download?code=" + c1.value + c2.value + c3.value + c4.value
+    })
     c1.value = ''
     c2.value = ''
     c3.value = ''
     c4.value = ''
     c1.focus()
-    showSnackbar('코드가 올바르지 않습니다.')
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    const {ipcRenderer} = require('electron')
     uidText = mdc.textField.MDCTextField.attachTo(document.getElementById('uid-container'))
     paperCountText = mdc.textField.MDCTextField.attachTo(document.getElementById('paper-count-container'))
 
@@ -127,5 +132,9 @@ document.addEventListener('DOMContentLoaded', () => {
             c3.focus()
             return
         }
+    })
+
+    ipcRenderer.on("showDialog", (event, str) => {
+        showSnackbar(str)
     })
 })

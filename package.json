@@ -1,6 +1,6 @@
 {
   "name": "iasa-print",
-  "version": "0.0.4",
+  "version": "0.1.1",
   "description": "IASA 프린터",
   "main": "index.js",
   "scripts": {
@@ -48,9 +48,9 @@
   },
   "homepage": "https://github.com/IASA-NULL/iasa-print#readme",
   "dependencies": {
-    "electron-settings": "^4.0.2",
-    "node-fetch": "^2.6.1",
     "electron-acrylic-window": "^0.4.7",
+    "electron-dl": "^3.0.2",
+    "electron-settings": "^4.0.2",
     "electron-updater": "^4.3.5"
   },
   "devDependencies": {
