@@ -1,5 +1,6 @@
 let snackbar, uidText, paperCountText
 let c1, c2, c3, c4
+const {machineIdSync} = require('node-machine-id')
 
 
 function showSnackbar(str) {
@@ -43,8 +44,9 @@ function print() {
     }
     uidText.value = ''
     paperCountText.value = ''
-    fetch(`https://api.iasa.kr/print/register?uid=${uid}&paperCount=${paperCount}`).then(() => {
-        showSnackbar('명부에 정상적으로 등록됐어요.')
+    fetch(`https://api.iasa.kr/print/register?uid=${uid}&paperCount=${paperCount}&cid=${machineIdSync()}`).then((res) => {
+        if(res.status!==200)showSnackbar('잠시 후 다시 시도해 주세요.')
+        else showSnackbar('명부에 정상적으로 등록됐어요.')
     }).catch(() => {
         showSnackbar('잠시 후 다시 시도해 주세요.')
     })
