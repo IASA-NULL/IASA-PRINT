@@ -54,6 +54,7 @@ function print() {
 
 function getFile() {
     const {ipcRenderer} = require('electron')
+    showSnackbar('파일을 다운 받고 있어요.')
     ipcRenderer.send("download", {
         url: "https://api.iasa.kr/print/download?code=" + c1.value + c2.value + c3.value + c4.value
     })

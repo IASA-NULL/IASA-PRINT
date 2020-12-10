@@ -49,8 +49,9 @@ function createMainWindow() {
 
     //mainWindow.webContents.openDevTools({mode: "detach"})
 
-    mainWindow.on('closed', () => {
-        mainWindow = null
+    mainWindow.on('close', (e) => {
+        e.preventDefault()
+        mainWindow.minimize()
     })
 }
 
