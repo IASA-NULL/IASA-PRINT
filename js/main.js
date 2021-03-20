@@ -1,6 +1,7 @@
 let snackbar, uidText, paperCountText
 let c1, c2, c3, c4
 const {machineIdSync} = require('node-machine-id')
+const {ipcRenderer} = require('electron')
 
 
 function showSnackbar(str) {
@@ -44,24 +45,25 @@ function print() {
     }
     uidText.value = ''
     paperCountText.value = ''
-    fetch(`https://api.iasa.kr/print/register?uid=${uid}&paperCount=${paperCount}&cid=${machineIdSync()}`).then((res) => {
-        if(res.status!==200)showSnackbar('잠시 후 다시 시도해 주세요.')
-        else showSnackbar('명부에 정상적으로 등록됐어요.')
-    }).catch(() => {
-        showSnackbar('잠시 후 다시 시도해 주세요.')
+    uidText.focus()
+    ipcRenderer.send("register", {
+        sid:uid,
+        paperCount:paperCount,
+        cid:machineIdSync()
     })
 }
 
 function getFile() {
-    const {ipcRenderer} = require('electron')
     showSnackbar('파일을 다운 받고 있어요.')
     ipcRenderer.send("download", {
-        url: "https://api.iasa.kr/print/download?code=" + c1.value + c2.value + c3.value + c4.value
+        code: c1.value + c2.value + c3.value + c4.value + c5.value + c6.value
     })
     c1.value = ''
     c2.value = ''
     c3.value = ''
     c4.value = ''
+    c5.value = ''
+    c6.value = ''
     c1.focus()
 }
 
@@ -84,6 +86,8 @@ document.addEventListener('DOMContentLoaded', () => {
     c2 = document.getElementById('fileCode2')
     c3 = document.getElementById('fileCode3')
     c4 = document.getElementById('fileCode4')
+    c5 = document.getElementById('fileCode5')
+    c6 = document.getElementById('fileCode6')
     c1.addEventListener('focus', () => {
         if (c1.value) c2.focus()
     })
@@ -97,7 +101,15 @@ document.addEventListener('DOMContentLoaded', () => {
     })
     c4.addEventListener('focus', () => {
         if (c3.value === '') c3.focus()
-        else c4.select()
+        else if (c4.value) c5.focus()
+    })
+    c5.addEventListener('focus', () => {
+        if (c4.value === '') c4.focus()
+        else if (c5.value) c6.focus()
+    })
+    c6.addEventListener('focus', () => {
+        if (c5.value === '') c5.focus()
+        else c6.select()
     })
     c1.addEventListener('keyup', (e) => {
         c1.value = isNaN(parseInt(c1.value[0])) ? '' : parseInt(c1.value[0])
@@ -127,12 +139,34 @@ document.addEventListener('DOMContentLoaded', () => {
     })
     c4.addEventListener('keyup', (e) => {
         c4.value = isNaN(parseInt(c4.value[0])) ? '' : parseInt(c4.value[0])
-        if (c4.value) getFile()
+        c5.focus()
     })
     c4.addEventListener('keydown', (e) => {
         if (e.key === 'Backspace' && c4.value === '') {
             c3.value = ''
             c3.focus()
+            return
+        }
+    })
+    c5.addEventListener('keyup', (e) => {
+        c5.value = isNaN(parseInt(c5.value[0])) ? '' : parseInt(c5.value[0])
+        c6.focus()
+    })
+    c5.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && c5.value === '') {
+            c4.value = ''
+            c4.focus()
+            return
+        }
+    })
+    c6.addEventListener('keyup', (e) => {
+        c6.value = isNaN(parseInt(c6.value[0])) ? '' : parseInt(c6.value[0])
+        if (c6.value) getFile()
+    })
+    c6.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && c6.value === '') {
+            c5.value = ''
+            c5.focus()
             return
         }
     })
