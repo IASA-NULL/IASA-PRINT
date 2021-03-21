@@ -6,6 +6,7 @@ const {autoUpdater} = require("electron-updater")
 const {version} = require('./package.json')
 const fetch = require('node-fetch')
 const fs = require('fs')
+const iconvLite = require('iconv-lite')
 
 
 let mainWindow, signinWindow
@@ -185,7 +186,8 @@ function init() {
                         cookie: 'auth='+setting.getSync('token')+';'
                     }
                 }).then(async res=>{
-                    const filename=res.headers.get('Content-Disposition').split('filename=').slice(1).join('')
+                    const filename=iconvLite.decode(iconvLite.encode(res.headers.get('Content-Disposition').split('filename=').slice(1).join(''), 'ISO-8859-1'), 'UTF-8')
+                    console.log(filename)
                     const fileStream = fs.createWriteStream(path.join(target, filename));
                     await new Promise((resolve, reject) => {
                         res.body.pipe(fileStream);
