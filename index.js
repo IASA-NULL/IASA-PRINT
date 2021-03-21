@@ -4,13 +4,13 @@ const setting = require('electron-settings')
 const {BrowserWindow} = require('electron-acrylic-window')
 const {autoUpdater} = require("electron-updater")
 const {version} = require('./package.json')
-const fetch=require('node-fetch')
-const fs=require('fs')
+const fetch = require('node-fetch')
+const fs = require('fs')
 
 
-let mainWindow
-let signinWindow
+let mainWindow, signinWindow
 let tray
+let closeMainWindow = false
 
 
 const gotTheLock = app.requestSingleInstanceLock()
@@ -21,6 +21,49 @@ if (!gotTheLock) {
 app.on('second-instance', createMainWindow)
 
 app.setLoginItemSettings({openAtLogin: true})
+
+async function checkValidAccount() {
+    const res = await fetch('https://api.iasa.kr/account/info', {
+        headers: {
+            cookie: 'auth='+setting.getSync('token')+';'
+        }
+    }).then(res=>res.json())
+    if (res.success && res.data.permission !== 5) {
+        dialog.showMessageBox(null, {
+            type: 'warning',
+            buttons: ['확인'],
+            defaultId: 2,
+            title: '로그인하세요.',
+            message: '계정 정보가 올바르지 않아요.',
+            detail: 'NULL에 문의하세요.',
+        }).then(()=>{
+            session.defaultSession.clearStorageData([]).then(createSigninWindow)
+        });
+        if(mainWindow) {
+            closeMainWindow = true
+            mainWindow.close()
+        }
+        return false
+    }
+    if (res.success && res.data.expired) {
+        dialog.showMessageBox(null, {
+            type: 'warning',
+            buttons: ['확인'],
+            defaultId: 2,
+            title: '로그인하세요.',
+            message: '로그인 토큰이 만료됐어요.',
+            detail: 'NULL에 문의하세요.',
+        }).then(()=>{
+            session.defaultSession.clearStorageData([]).then(createSigninWindow)
+        });
+        if(mainWindow) {
+            closeMainWindow = true
+            mainWindow.close()
+        }
+        return false
+    }
+    return true
+}
 
 function uuidv4() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
@@ -35,42 +78,13 @@ function getFramePath() {
 
 async function createMainWindow() {
     autoUpdater.checkForUpdates()
+    closeMainWindow = false
 
-    if(setting.getSync('token')){
-        const res=await fetch('https://api.iasa.kr/account/info', {
-            headers: {
-                cookie: 'auth='+setting.getSync('token')+';'
-            }
-        }).then(res=>res.json())
-        if(res.data.permission!==5) {
-            dialog.showMessageBox(null, {
-                type: 'warning',
-                buttons: ['확인'],
-                defaultId: 2,
-                title: '로그인하세요.',
-                message: '계정 정보가 올바르지 않아요.',
-                detail: 'NULL에 문의하세요.',
-            }).then(()=>{
-                session.defaultSession.clearStorageData([]).then(createSigninWindow)
-            });
-            return
-        }
-        if(res.data.expired) {
-            dialog.showMessageBox(null, {
-                type: 'warning',
-                buttons: ['확인'],
-                defaultId: 2,
-                title: '로그인하세요.',
-                message: '로그인 토큰이 만료됐어요.',
-                detail: 'NULL에 문의하세요.',
-            }).then(()=>{
-                session.defaultSession.clearStorageData([]).then(createSigninWindow)
-            });
-            return
-        }
+    if(setting.getSync('token')) {
+        if(!await checkValidAccount()) return
     }
     else {
-        createSigninWindow()
+        session.defaultSession.clearStorageData([]).then(createSigninWindow)
         return
     }
 
@@ -92,10 +106,13 @@ async function createMainWindow() {
     //mainWindow.webContents.openDevTools({mode: "detach"})
 
     mainWindow.on('close', (e) => {
-        e.preventDefault()
-        mainWindow.minimize()
+        if(!closeMainWindow) {
+            e.preventDefault()
+            mainWindow.minimize()
+        }
     })
 }
+
 function createSigninWindow() {
     autoUpdater.checkForUpdates()
     if (signinWindow) {
@@ -120,7 +137,6 @@ function createSigninWindow() {
             if(i.name==='auth') {
                 setting.setSync('token', i.value)
                 signinWindow.close()
-                signinWindow=null
                 createMainWindow()
                 return
             }
@@ -128,6 +144,10 @@ function createSigninWindow() {
     })
 
     //signinWindow.webContents.openDevTools({mode: "detach"})
+
+    signinWindow.on('close', (e) => {
+        signinWindow = null
+    })
 }
 
 function init() {
@@ -148,8 +168,9 @@ function init() {
             headers: {
                 cookie: 'auth='+setting.getSync('token')+';'
             }
-        }).then(res=>res.json()).then(fres=>{
+        }).then(res=>res.json()).then(async fres=>{
             if(!fres.success) {
+                if(!await checkValidAccount()) return
                 mainWindow.webContents.send("showDialog", fres.message)
                 return
             }
@@ -190,9 +211,12 @@ function init() {
                 cookie: 'auth='+setting.getSync('token')+';',
                 'Content-Type': 'application/json'
             }
-        }).then(res=>res.json()).then((res) => {
+        }).then(res=>res.json()).then(async (res) => {
             if(res.success) mainWindow.webContents.send("showDialog", '명부에 정상적으로 등록됐어요.')
-            else mainWindow.webContents.send("showDialog", res.message)
+            else {
+                if(!await checkValidAccount()) return
+                mainWindow.webContents.send("showDialog", res.message)
+            }
         }).catch(() => {
             mainWindow.webContents.send("showDialog", '잠시 후 다시 시도해 주세요.')
         })
