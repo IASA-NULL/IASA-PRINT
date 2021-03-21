@@ -42,7 +42,7 @@ async function createMainWindow() {
                 cookie: 'auth='+setting.getSync('token')+';'
             }
         }).then(res=>res.json())
-        if(res.data.permission!==4) {
+        if(res.data.permission!==5) {
             dialog.showMessageBox(null, {
                 type: 'warning',
                 buttons: ['확인'],
