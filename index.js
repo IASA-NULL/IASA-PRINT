@@ -111,6 +111,7 @@ async function createMainWindow() {
             e.preventDefault()
             mainWindow.minimize()
         }
+        else mainWindow = null
     })
 }
 
