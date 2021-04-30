@@ -34,7 +34,7 @@ async function checkValidAccount() {
             type: 'warning',
             buttons: ['확인'],
             defaultId: 2,
-            title: '로그인하세요.',
+            title: 'IASA PRINT',
             message: '계정 정보가 올바르지 않아요.',
             detail: 'NULL에 문의하세요.',
         }).then(()=>{
@@ -51,7 +51,7 @@ async function checkValidAccount() {
             type: 'warning',
             buttons: ['확인'],
             defaultId: 2,
-            title: '로그인하세요.',
+            title: 'IASA PRINT',
             message: '로그인 토큰이 만료됐어요.',
             detail: 'NULL에 문의하세요.',
         }).then(()=>{
@@ -130,7 +130,7 @@ function createSigninWindow() {
         }, icon: path.join(__dirname, 'res/logo.ico'), title: '로그인'
     })
     signinWindow.setMenu(null)
-    signinWindow.loadURL('https://account.iasa.kr/signin')
+    signinWindow.loadURL('https://account.iasa.kr/signin?app=SUFTQSBQUklOVA==')
     signinWindow.show()
 
     signinWindow.webContents.on('will-navigate', async()=> {
